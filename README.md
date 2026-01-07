@@ -70,8 +70,37 @@ The web app allows users to input customer details and receive:
 - Predicted churn probability
 - Clear interpretation of the result
 
-### Run locally
+---
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
+## 6 Project Structure
+
+├── app.py                 # Streamlit application
+├── experiments.ipynb      # Model training notebook
+├── prediction.ipynb       # Prediction and testing
+├── model.h5               # Trained model
+├── requirements.txt
+└── README.md
+
+---
+
+## 7 Technology stack
+
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- TensorFlow / Keras
+- Streamlit
+
+---
+
+## 8 Key Takeaways
+
+This project highlights how deep learning can be applied to real-world business problems and deployed for actionable decision support.
+
+---
+
+## Author
+
+Developed by Kartik
+
+
