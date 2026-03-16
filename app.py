@@ -8,8 +8,9 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
 import pandas as pd
 import pickle
 
-# Initialize Groq client
-client = Groq(api_key=os.getenv("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"))
+# Initialize Groq clientfrom groq import Groq
+
+client = Groq(api_key="gsk_YOUR_KEY_HERE")
 
 # ------------------------------
 # AI Strategy Generator
