@@ -1,6 +1,6 @@
 from groq import Groq
 
-client = Groq(api_key= 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)
+client = Groq(api_key="YOUR_API_KEY")
 
 
 import streamlit as st
@@ -25,8 +25,8 @@ Active Member: {customer_data['IsActiveMember']}
 Churn probability: {prob:.2f}
 Risk Level: {risk}
 
-Suggest a retention strategy for this customer.
-Explain briefly why this strategy may reduce churn.
+Suggest 2 specific retention strategies a bank could apply.
+Explain briefly why each strategy may reduce churn.
 """
 
     response = client.chat.completions.create(
@@ -94,32 +94,71 @@ input_data = pd.concat([input_data.reset_index(drop=True), geo_encoded_df], axis
 ## Scale
 input_data_scaled = Scaler.transform(input_data)
 
+## Risk level
+def risk_level(prob):
+    if prob > 0.8:
+        return "HIGH"
+    elif prob > 0.6:
+        return "MEDIUM"
+    else:
+        return "LOW"
+
 ## Predict churn
 prediction = model.predict(input_data_scaled)
 prediction_proba = prediction[0][0]
 
+risk = risk_level(prediction_proba)
+
 st.subheader("Prediction Result")
 st.write(f'Churn/Exit Probability: {prediction_proba:.2f}')
+
+st.subheader("Customer Risk Indicator")
+
+risk = risk_level(prediction_proba)
+
+if risk == "HIGH":
+    st.error("🔴 HIGH CHURN RISK")
+elif risk == "MEDIUM":
+    st.warning("🟡 MEDIUM CHURN RISK")
+else:
+    st.success("🟢 LOW CHURN RISK")
+
 
 if prediction_proba > 0.5:
     st.error('The customer is likely to churn.')
 else:
     st.success('The customer is not likely to churn.')
 
-def risk_level(prob):
-    if prediction_proba  > 0.8:
-        return "HIGH"
-    elif prediction_proba  > 0.6:
-        return "MEDIUM"
-    else:
-        return "LOW"
+customer_dict = {
+    "Age": age,
+    "Tenure": tenure,
+    "Balance": balance,
+    "NumOfProducts": num_of_products,
+    "IsActiveMember": is_active_member
+}
 
-st.subheader("AI Agent Recommendation")
+st.subheader("AI Retention Playbook")
 
-customer_dict = input_data.iloc[0].to_dict()
+customer_dict = {
+    "Age": age,
+    "Tenure": tenure,
+    "Balance": balance,
+    "NumOfProducts": num_of_products,
+    "IsActiveMember": is_active_member
+}
 
-strategy = generate_strategy(customer_dict, risk, prediction_proba)
+with st.spinner("AI Agent analyzing customer behavior..."):
+    strategy = generate_strategy(customer_dict, risk, prediction_proba)
 
 st.write(strategy)
+
+st.subheader("Business Insight")
+
+if prediction_proba > 0.8:
+    st.write("This customer has a very high probability of churn. Immediate retention action is recommended.")
+elif prediction_proba > 0.6:
+    st.write("This customer shows moderate churn risk. Monitoring and targeted engagement may help retention.")
+else:
+    st.write("This customer appears stable with low churn risk.")
 
 st.markdown("**Kartik | Built with ❤️, TensorFlow & Streamlit**")
