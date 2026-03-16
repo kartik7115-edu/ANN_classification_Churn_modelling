@@ -94,18 +94,6 @@ input_data = pd.concat([input_data.reset_index(drop=True), geo_encoded_df], axis
 ## Scale
 input_data_scaled = Scaler.transform(input_data)
 
-## Predict churn
-prediction = model.predict(input_data_scaled)
-prediction_proba = prediction[0][0]
-
-st.subheader("Prediction Result")
-st.write(f'Churn/Exit Probability: {prediction_proba:.2f}')
-
-if prediction_proba > 0.5:
-    st.error('The customer is likely to churn.')
-else:
-    st.success('The customer is not likely to churn.')
-
 def risk_level(prob):
     if prediction_proba  > 0.8:
         return "HIGH"
@@ -114,12 +102,59 @@ def risk_level(prob):
     else:
         return "LOW"
 
-st.subheader("AI Agent Recommendation")
+## Predict churn
+prediction = model.predict(input_data_scaled)
+prediction_proba = prediction[0][0]
 
-customer_dict = input_data.iloc[0].to_dict()
+st.write(f'Churn Probability: {prediction_proba:.2f}')
 
-strategy = generate_strategy(customer_dict, risk, prediction_proba)
+risk = risk_level(prediction_proba)
 
-st.write(strategy)
+st.write(f'Risk Level: {risk}')
+
+if prediction_proba > 0.5:
+    st.error('The customer is likely to churn.')
+else:
+    st.success('The customer is not likely to churn.')
+
+
+def retention_strategy(prob, tenure, balance):
+    if prob > 0.8:
+        return "Offer 25% retention discount and assign customer success manager."
+    elif prob > 0.6:
+        return "Provide loyalty rewards or service upgrade."
+    elif prob > 0.4:
+        return "Send engagement email and promotional offers."
+    else:
+        return "No action required."
+
+def explain_churn(age, tenure, balance):
+    reasons = []
+
+    if tenure < 3:
+        reasons.append("Customer tenure is very low.")
+
+    if balance > 100000:
+        reasons.append("Customer has high account balance.")
+
+    if age > 60:
+        reasons.append("Customer belongs to higher age group.")
+
+    return reasons
+
+# Agent outputs
+risk = risk_level(prediction_proba)
+action = retention_strategy(prediction_proba, tenure, balance)
+reasons = explain_churn(age, tenure, balance)
+
+st.subheader("AI Agent Decision")
+
+st.write(f"Risk Level: **{risk}**")
+st.write(f"Recommended Action: {action}")
+
+if reasons:
+    st.write("Possible Reasons for Churn:")
+    for r in reasons:
+        st.write(f"- {r}")
 
 st.markdown("**Kartik | Built with ❤️, TensorFlow & Streamlit**")

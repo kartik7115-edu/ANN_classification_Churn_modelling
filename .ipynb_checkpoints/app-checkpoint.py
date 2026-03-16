@@ -1,9 +1,44 @@
+from groq import Groq
+
+client = Groq(api_key= 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)
+
+
 import streamlit as st
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler, LabelEncoder , OneHotEncoder
 import pandas as pd
 import pickle
+
+def generate_strategy(customer_data, risk, prob):
+
+    prompt = f"""
+You are a banking customer retention expert.
+
+Customer details:
+Age: {customer_data['Age']}
+Tenure: {customer_data['Tenure']}
+Balance: {customer_data['Balance']}
+Products: {customer_data['NumOfProducts']}
+Active Member: {customer_data['IsActiveMember']}
+
+Churn probability: {prob:.2f}
+Risk Level: {risk}
+
+Suggest a retention strategy for this customer.
+Explain briefly why this strategy may reduce churn.
+"""
+
+    response = client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message.content
+
+
 
 ## Load the model
 model = tf.keras.models.load_model('model.h5')
@@ -71,55 +106,20 @@ if prediction_proba > 0.5:
 else:
     st.success('The customer is not likely to churn.')
 
-# -------------------------------
-# AI AGENT LOGIC
-# -------------------------------
-
 def risk_level(prob):
-    if prob > 0.8:
+    if prediction_proba  > 0.8:
         return "HIGH"
-    elif prob > 0.6:
+    elif prediction_proba  > 0.6:
         return "MEDIUM"
     else:
         return "LOW"
 
-def retention_strategy(prob, tenure, balance):
-    if prob > 0.8:
-        return "Offer 25% retention discount and assign customer success manager."
-    elif prob > 0.6:
-        return "Provide loyalty rewards or service upgrade."
-    elif prob > 0.4:
-        return "Send engagement email and promotional offers."
-    else:
-        return "No action required."
+st.subheader("AI Agent Recommendation")
 
-def explain_churn(age, tenure, balance):
-    reasons = []
+customer_dict = input_data.iloc[0].to_dict()
 
-    if tenure < 3:
-        reasons.append("Customer tenure is very low.")
+strategy = generate_strategy(customer_dict, risk, prediction_proba)
 
-    if balance > 100000:
-        reasons.append("Customer has high account balance.")
-
-    if age > 60:
-        reasons.append("Customer belongs to higher age group.")
-
-    return reasons
-
-# Agent outputs
-risk = risk_level(prediction_proba)
-action = retention_strategy(prediction_proba, tenure, balance)
-reasons = explain_churn(age, tenure, balance)
-
-st.subheader("AI Agent Decision")
-
-st.write(f"Risk Level: **{risk}**")
-st.write(f"Recommended Action: {action}")
-
-if reasons:
-    st.write("Possible Reasons for Churn:")
-    for r in reasons:
-        st.write(f"- {r}")
+st.write(strategy)
 
 st.markdown("**Kartik | Built with ❤️, TensorFlow & Streamlit**")
