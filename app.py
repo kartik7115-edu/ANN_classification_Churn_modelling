@@ -10,7 +10,7 @@ import pickle
 
 # Initialize Groq clientfrom groq import Groq
 
-client = Groq(api_key="gsk_YOUR_KEY_HERE")
+client = Groq(api_key="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")
 
 # ------------------------------
 # AI Strategy Generator
