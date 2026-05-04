@@ -630,7 +630,7 @@ def generate_offer_text(
     ]
 
     #THIS PROMPT IS PASSED TO LLM
-    prompt = "\n".join(
+    '''prompt = "\n".join(
         [
             "You are a bank retention strategist.",
             "Write a concise retention offer in at most 3 sentences.",
@@ -646,8 +646,45 @@ def generate_offer_text(
             *offer_lines,
             "Return only the final recommendation text.",
         ]
-    )
+    )'''
 
+    prompt = "\n".join(
+        [
+            "You are a bank retention strategist acting as an intelligent decision agent.",
+        
+            "Task:",
+            "Generate a concise, data-driven retention recommendation.",
+        
+            "Instructions:",
+            "- First identify the main customer risk drivers",
+            "- Then justify why the selected offer is appropriate",
+            "- Then present the offer clearly",
+            "- Keep total output within 4–5 lines (not long paragraphs)",
+            "- Avoid generic greetings like 'Dear customer'",
+            "- Do NOT mention probabilities, scores, models, or technical terms",
+            "- Do NOT invent new offers outside the given list",
+        
+            "Customer Context:",
+            f"Customer ID: {customer_data['CustomerId']}",
+            f"Churn risk level: {'High' if churn_rate > 0.7 else 'Medium' if churn_rate > 0.4 else 'Low'}",
+            f"Credit score: {float(customer_data['CreditScore']):.0f}",
+            f"Key features to improve: {', '.join(selected_features)}",
+            
+            "Available Offers:",
+            *offer_lines,
+        
+            "Output format:",
+            "Risk Summary: <1 line>",
+            "Strategy: <1 line>",
+            "Recommendation: <final offer text>",
+            "Why it works: <2 bullet points>",
+        
+            "Return only the formatted answer."
+        ]
+    )
+    
+
+    
     #RESPONSE WILL BE BASED ON PARAMETER VALUES AND HISTORY OF OFFERS PROVIDED BY LLM
     #NOTE: LLM is just forming offer sentence
     # offer scope is predefined, and influnce of each offer is provided by learning agent impolemented by us
