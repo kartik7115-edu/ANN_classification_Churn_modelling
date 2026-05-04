@@ -630,24 +630,6 @@ def generate_offer_text(
     ]
 
     #THIS PROMPT IS PASSED TO LLM
-    '''prompt = "\n".join(
-        [
-            "You are a bank retention strategist.",
-            "Write a concise retention offer in at most 3 sentences.",
-            "Use the offer importance and customer data to produce realistic offer",
-            "You can include schemes,coupon,perks,relaxation but should avoid risky offers based on customer data",
-            "Do not mention probabilities, raw scores, models, JSON, or Groq.",
-            "Do not invent offer types outside the candidate list.",
-            f"Customer ID: {customer_data['CustomerId']}",
-            f"Churn risk: {churn_rate:.4f}",
-            f"Credit score: {float(customer_data['CreditScore']):.0f}",
-            f"Selected features to improve: {', '.join(selected_features)}",
-            "Candidate offers:",
-            *offer_lines,
-            "Return only the final recommendation text.",
-        ]
-    )'''
-
     prompt = "\n".join(
         [
             "You are a bank retention strategist acting as an intelligent decision agent.",
