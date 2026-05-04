@@ -674,9 +674,8 @@ def generate_offer_text(
             *offer_lines,
         
             "Output format:",
-            "Risk Summary: <1 line>",
-            "Strategy: <1 line>",
-            "Recommendation: <final offer text>",
+            "Strategy: <2 line>",
+            "Recommendation: <final offer text in a formal and professional language>",
             "Why it works: <2 bullet points>",
         
             "Return only the formatted answer."
