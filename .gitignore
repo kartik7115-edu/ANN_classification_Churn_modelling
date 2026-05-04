@@ -1,0 +1,11 @@
+.env
+.codex-home/
+.venv312/
+
+__pycache__/
+logs/
+*.log
+
+*.previous
+streamlit_*.out
+streamlit_*.err

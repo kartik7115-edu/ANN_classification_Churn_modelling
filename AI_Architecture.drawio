@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Learning Agent" id="0">
+    <mxGraphModel dx="1336" dy="1798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="env" parent="1" style="rounded=1;fillColor=light-dark(#F8CECC,#133851);" value="ENVIRONMENT&#xa;Churn_Modelling.csv&#xa;update_history.csv&#xa;Customer behavior (accept/reject, feedback)" vertex="1">
+          <mxGeometry height="120" width="340" x="970" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sensor" parent="1" style="rounded=1;fillColor=#dae8fc;" value="SENSORS&#xa;fetch_customer_record&#xa;predict_churn&#xa;get_customer_offer_history&#xa;store_in_observation&#xa;(These all functions get data from user &#xa;and pass to agent in learnable format)" vertex="1">
+          <mxGeometry height="150" width="250" x="620" y="-30" as="geometry" />
+        </mxCell>
+        <mxCell id="perf" parent="1" style="rounded=1;fillColor=#d5e8d4;" value="PERFORMANCE ELEMENT&#xa;select_offer_features&#xa;give_offer&#xa;gap = retained_mean - current_rec&#xa;score = gap × feature_weight × offer_weight" vertex="1">
+          <mxGeometry height="120" width="380" x="500" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="prob" parent="1" style="rounded=1;fillColor=light-dark(#FFF2CC,#191644);" value="PROBLEM GENERATOR&#xa;safe_selection&#xa;(epsilon-greedy exploration)" vertex="1">
+          <mxGeometry height="80" width="200" x="330" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="act" parent="1" style="rounded=1;fillColor=light-dark(#E1D5E7,#3F3C20);" value="ACTUATOR&#xa;generate_offer_details pass to LLM then&#xa;create_offer_text&#xa;(send offer to customer)" vertex="1">
+          <mxGeometry height="80" width="260" x="630" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="critic" parent="1" style="rounded=1;fillColor=#ffe6cc;html=1;labelBorderColor=none;textShadow=0;" value="CRITIC:&lt;br&gt;compute_reward&lt;div&gt;Change in behaviour&lt;/div&gt;&lt;div&gt;&lt;br&gt;INPUTS&lt;br&gt;&amp;nbsp;accepted_offer&lt;br&gt;pre_data&lt;br&gt;current_data&lt;br&gt;feedback_reason&lt;/div&gt;" vertex="1">
+          <mxGeometry height="160" width="200" x="120" y="-35" as="geometry" />
+        </mxCell>
+        <mxCell id="learn" parent="1" style="rounded=1;fillColor=light-dark(#F5F5F5,#4E1140);" value="LEARNING ELEMENT&#xa;update_offer_weights&#xa;update_feature_weights&#xa;initialize_learning_state&#xa;append_parameters_snapshot&#xa;load_learning_state" vertex="1">
+          <mxGeometry height="160" width="200" x="120" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="state" parent="1" style="rounded=1;fillColor=light-dark(#F5F5F5,#11353C);" value="STATE&#xa;feature_weights&#xa;offer_weights" vertex="1">
+          <mxGeometry height="80" width="200" x="370" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="env" style="endArrow=block;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="sensor">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="970" y="205" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="sensor" style="endArrow=block;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="perf">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="775" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="perf" style="endArrow=block;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="act">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="act" style="endArrow=block;entryX=0;entryY=0.75;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="env">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="sensor" style="endArrow=block;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="critic">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310.0000000000002" y="29.878048780487916" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="critic" style="endArrow=block;" target="learn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="learn" style="endArrow=block;" target="perf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="state" style="endArrow=block;" target="perf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="state" style="endArrow=block;" target="learn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="prob" style="endArrow=block;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="perf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

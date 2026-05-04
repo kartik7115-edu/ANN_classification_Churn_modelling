@@ -1,106 +1,149 @@
-# Customer Churn Prediction using Artificial Neural Networks (ANN)
+# Customer Retention Learning Agent
 
-This project builds an end-to-end machine learning pipeline to predict whether a bank customer is likely to **churn (exit)**.  
-It covers data cleaning, feature engineering, model training, evaluation, and deployment through an interactive Streamlit application.
+An AI-driven system that predicts customer churn, recommends personalized retention offers, and improves its strategy using customer feedback.
 
----
+## Project Description
 
-## 1 Project Overview
+This project implements a customer retention learning agent built on top of a churn prediction model. The application analyzes a customer's profile, estimates churn probability, selects retention offers, captures customer feedback, and updates learned parameters over time.
 
-Customer churn is a critical problem for financial institutions. Accurately identifying customers at risk enables better retention strategies and improved business outcomes.
+Core components:
 
-This project demonstrates:
+- Churn prediction using the trained TensorFlow model in `model.h5`
+- Offer recommendation logic in `app.py`
+- Feedback-driven learning through `logs/update_history.csv` and `logs/parameters.csv`
+- Diagnostics and report generation through `report_visuals.py`
 
-- End-to-end ML workflow
-- Practical feature preprocessing
-- ANN-based binary classification
-- Deployment for real-time predictions
+High-level workflow:
 
----
+`Customer Data -> Predict Churn -> Generate Offer -> Collect Feedback -> Learn and Update`
 
-## 2 Dataset Summary
+## Installation Steps
 
-Each record represents a customer with features such as:
+1. Clone the repository:
 
-- Geography, Gender  
-- Age, Tenure  
-- Balance, Estimated Salary  
-- Credit Score  
-- Number of Products  
-- Has Credit Card  
-- Is Active Member  
+   ```bash
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
+   ```
 
-**Target variable:**  
-`Exited` → `0` (stays) or `1` (churns)
+2. Create a virtual environment:
 
----
+   ```bash
+   python -m venv .venv312
+   ```
 
-## 3 Model Architecture
+3. Activate the virtual environment:
 
-The predictive model is built using **TensorFlow/Keras**:
+   Windows:
 
-- Input layer (processed numeric + encoded categorical variables)
-- Two hidden layers with ReLU activation
-- Output layer with Sigmoid activation
+   ```powershell
+   .\.venv312\Scripts\activate
+   ```
 
-**Training details:**
+   Linux / macOS:
 
-- Loss: Binary Crossentropy  
-- Optimizer: Adam  
-- Regular evaluation on validation data  
-- Early stopping to prevent overfitting  
+   ```bash
+   source .venv312/bin/activate
+   ```
 
----
+4. Install dependencies:
 
-## 4 Evaluation Metrics
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-Performance is assessed using:
+## How to Run the Project
 
-- Accuracy  
-- Precision and Recall  
-- Confusion Matrix  
-- Churn probability outputs
+### Reset Learning State
 
----
+Use this if you want to start fresh without previous feedback or learned parameters:
 
-## 5 Streamlit Application
+```powershell
+.\.venv312\Scripts\python.exe reset_state.py
+```
 
-The web app allows users to input customer details and receive:
+To also remove generated diagnostics:
 
-- Predicted churn probability
-- Clear interpretation of the result
+```powershell
+.\.venv312\Scripts\python.exe reset_state.py --clear-reports
+```
 
----
+### Run the Streamlit App
 
-## 6 Project Structure
+```powershell
+.\.venv312\Scripts\python.exe -m streamlit run app.py --server.headless true
+```
 
-├── app.py                 # Streamlit application
-├── experiments.ipynb      # Model training notebook
-├── prediction.ipynb       # Prediction and testing
-├── model.h5               # Trained model
-├── requirements.txt
-└── README.md
+Then open:
 
----
+```text
+http://localhost:8501
+```
 
-## 7 Technology stack
+### Generate Reports
 
-- Python
-- Pandas, NumPy
-- Scikit-learn
-- TensorFlow / Keras
-- Streamlit
+```powershell
+.\.venv312\Scripts\python.exe report_visuals.py
+```
 
----
+This generates diagnostics in `reports/learning_diagnostics/`, including the HTML dashboard:
 
-## 8 Key Takeaways
+```text
+reports/learning_diagnostics/index.html
+```
 
-This project highlights how deep learning can be applied to real-world business problems and deployed for actionable decision support.
+## Example Input/Output
 
----
+### Example Input
 
-## Author
+Customer ID:
 
-Developed by Kartik
+```text
+15634602
+```
 
+Example customer characteristics:
 
+- Credit Score: 600
+- Balance: 50000
+- NumOfProducts: 1
+- IsActiveMember: 0
+
+### Example Output
+
+- Churn Probability: `0.82`
+- Risk Level: High
+- Key Drivers: low engagement and low product usage
+- Recommended Offer: cashback bonus to increase activity
+- Selected Features: `IsActiveMember`, `NumOfProducts`
+- Simulated Safe Outcome: churn reduced to a lower predicted value when a safe offer is available
+
+### Example Feedback Loop
+
+1. The customer accepts or rejects the offer.
+2. The system stores the interaction in `logs/update_history.csv`.
+3. Learned parameters are updated in `logs/parameters.csv`.
+4. Future offer selection uses the updated state.
+
+## Project Structure
+
+```text
+.
+|-- app.py
+|-- model.h5
+|-- reset_state.py
+|-- report_visuals.py
+|-- logs/
+|   |-- update_history.csv
+|   `-- parameters.csv
+|-- reports/
+|   `-- learning_diagnostics/
+`-- requirements.txt
+```
+
+## Notes
+
+- The app may intentionally refuse to recommend an automated offer if all evaluated offers increase predicted churn.
+- Resetting logs is enough for a fresh learning run; report files can be regenerated with `report_visuals.py`.
+- Learning updates are based on recorded customer feedback and parameter snapshots.

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Diagnostics</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4efe6;
+      --panel: #fffdf9;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --line: #ddd3c5;
+      --accent: #0f766e;
+      --accent-soft: #d9f3ee;
+      --shadow: 0 18px 40px rgba(31, 41, 55, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),
+        linear-gradient(180deg, #f7f2ea 0%, var(--bg) 100%);
+    }
+    .page {
+      width: min(1400px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(15, 118, 110, 0.96), rgba(17, 24, 39, 0.96));
+      color: #f8fafc;
+      border-radius: 24px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1.05;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 880px;
+      color: rgba(248, 250, 252, 0.84);
+      line-height: 1.6;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 22px 0 0;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 16px 18px;
+      backdrop-filter: blur(10px);
+    }
+    .stat-label {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(248, 250, 252, 0.68);
+    }
+    .stat-value {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .section {
+      margin-top: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .toggle-group {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .toggle-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font: inherit;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .toggle-btn.active {
+      background: #f8fafc;
+      color: #111827;
+      border-color: #f8fafc;
+    }
+    .toggle-note {
+      margin: 0;
+      color: rgba(248, 250, 252, 0.75);
+      font-size: 0.95rem;
+    }
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 1.4rem;
+    }
+    .section p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .chart-frame {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .chart-frame object {
+      display: block;
+      width: 100%;
+      min-height: 720px;
+    }
+    .downloads {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .downloads a {
+      text-decoration: none;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    details {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      margin-top: 18px;
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .filter-input {
+      flex: 1 1 280px;
+      min-width: 220px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+    }
+    .filter-count {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .table-wrap {
+      margin-top: 14px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #ebe3d7;
+      text-align: left;
+      vertical-align: top;
+    }
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: #fbf8f2;
+      color: #374151;
+      z-index: 1;
+    }
+    .data-table tr:nth-child(even) td {
+      background: #fffcf7;
+    }
+    .empty-state {
+      color: var(--muted);
+      margin: 10px 0 0;
+    }
+    body.mode-charts .data-section,
+    body.mode-charts details {
+      display: none;
+    }
+    body.mode-data .chart-section {
+      display: none;
+    }
+    .hidden-row {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .page { width: min(100% - 20px, 1400px); padding-top: 20px; }
+      .hero, .section { border-radius: 18px; padding: 18px; }
+      .chart-frame object { min-height: 460px; }
+      .toolbar { padding: 12px; }
+    }
+  </style>
+</head>
+<body class="mode-all">
+  <main class="page">
+    <section class="hero">
+      <h1>Learning Diagnostics Dashboard</h1>
+      <p>Single-page view for retention-agent parameter trends, offer weight evolution, churn comparisons, and exported diagnostic tables.</p>
+      <div class="stats">
+        <article class="stat">
+          <p class="stat-label">Feature Trends</p>
+          <p class="stat-value">1 batches</p>
+        </article>
+        <article class="stat">
+          <p class="stat-label">Offer Trends</p>
+          <p class="stat-value">6 offers across 4 features</p>
+        </article>
+        <article class="stat">
+          <p class="stat-label">Feedback</p>
+          <p class="stat-value">2 accepted / 1 rejected</p>
+        </article>
+      </div>
+      <div class="toolbar">
+        <div class="toggle-group" aria-label="Display mode">
+          <button class="toggle-btn active" type="button" data-mode="all">Charts + Data</button>
+          <button class="toggle-btn" type="button" data-mode="charts">Charts Only</button>
+          <button class="toggle-btn" type="button" data-mode="data">Data Only</button>
+        </div>
+        <p class="toggle-note">Use view mode to focus on visuals or inspect the exported tables.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Feature Parameter Updates</h2>
+      <p>Line chart showing how the learned feature weights move across batches.</p>
+      <div class="chart-frame chart-section">
+        <object type="image/svg+xml" data="feature_parameter_updates.svg">Feature parameter SVG</object>
+      </div>
+      <details class="data-section">
+        <summary>Feature Parameter CSV Preview</summary>
+        <div class="filter-bar">
+          <input class="filter-input" type="search" data-table-target="feature-table" placeholder="Filter feature rows by batch, feature, reason, or customer id">
+          <span class="filter-count" data-count-target="feature-table">Showing all rows</span>
+        </div>
+        <div class="table-wrap" id="feature-table"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: left;">
+      <th>batch_number</th>
+      <th>feature</th>
+      <th>weight</th>
+      <th>reason</th>
+      <th>customer_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>-0.2940</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>0.1191</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>0.0177</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>0.3876</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table></div>
+      </details>
+    </section>
+
+    <section class="section">
+      <h2>Offer Parameter Updates</h2>
+      <p>Small multiples view of offer weights by feature, with the exported flattened table below.</p>
+      <div class="chart-frame chart-section">
+        <object type="image/svg+xml" data="offer_parameter_updates.svg">Offer parameter SVG</object>
+      </div>
+      <details class="data-section">
+        <summary>Offer Parameter CSV Preview</summary>
+        <div class="filter-bar">
+          <input class="filter-input" type="search" data-table-target="offer-table" placeholder="Filter offer rows by batch, feature, offer, weight, or reason">
+          <span class="filter-count" data-count-target="offer-table">Showing all rows</span>
+        </div>
+        <div class="table-wrap" id="offer-table"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: left;">
+      <th>batch_number</th>
+      <th>feature</th>
+      <th>offer</th>
+      <th>offer_label</th>
+      <th>weight</th>
+      <th>reason</th>
+      <th>customer_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>cashback_bonus</td>
+      <td>Cashback bonus</td>
+      <td>0.45</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>fee_waiver</td>
+      <td>Fee waiver</td>
+      <td>0.35</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>rate_bonus</td>
+      <td>Rate bonus</td>
+      <td>0.50</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>credit_limit_review</td>
+      <td>Credit limit review</td>
+      <td>0.10</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>product_bundle</td>
+      <td>Product bundle</td>
+      <td>0.10</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Balance</td>
+      <td>advisor_callback</td>
+      <td>Advisor callback</td>
+      <td>0.20</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>cashback_bonus</td>
+      <td>Cashback bonus</td>
+      <td>0.15</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>fee_waiver</td>
+      <td>Fee waiver</td>
+      <td>0.15</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>rate_bonus</td>
+      <td>Rate bonus</td>
+      <td>0.10</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>credit_limit_review</td>
+      <td>Credit limit review</td>
+      <td>0.10</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>product_bundle</td>
+      <td>Product bundle</td>
+      <td>0.50</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NumOfProducts</td>
+      <td>advisor_callback</td>
+      <td>Advisor callback</td>
+      <td>0.15</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>cashback_bonus</td>
+      <td>Cashback bonus</td>
+      <td>0.10</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>fee_waiver</td>
+      <td>Fee waiver</td>
+      <td>0.20</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>rate_bonus</td>
+      <td>Rate bonus</td>
+      <td>0.10</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>credit_limit_review</td>
+      <td>Credit limit review</td>
+      <td>0.55</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>product_bundle</td>
+      <td>Product bundle</td>
+      <td>0.15</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>HasCrCard</td>
+      <td>advisor_callback</td>
+      <td>Advisor callback</td>
+      <td>0.15</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>cashback_bonus</td>
+      <td>Cashback bonus</td>
+      <td>0.30</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>fee_waiver</td>
+      <td>Fee waiver</td>
+      <td>0.30</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>rate_bonus</td>
+      <td>Rate bonus</td>
+      <td>0.30</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>credit_limit_review</td>
+      <td>Credit limit review</td>
+      <td>0.25</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>product_bundle</td>
+      <td>Product bundle</td>
+      <td>0.25</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>IsActiveMember</td>
+      <td>advisor_callback</td>
+      <td>Advisor callback</td>
+      <td>0.50</td>
+      <td>initialize</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table></div>
+      </details>
+    </section>
+
+    <section class="section">
+      <h2>Feedback Diagnostics</h2>
+      <p>Comparison of churn probability before and after offers, plus acceptance and rejection trend counts.</p>
+      <div class="chart-frame chart-section">
+        <object type="image/svg+xml" data="churn_before_after.svg">Churn before/after SVG</object>
+      </div>
+      <div class="chart-frame chart-section" style="margin-top: 18px;">
+        <object type="image/svg+xml" data="feedback_acceptance_trend.svg">Feedback acceptance trend SVG</object>
+      </div>
+      <details class="data-section">
+        <summary>Feedback Summary CSV Preview</summary>
+        <div class="filter-bar">
+          <input class="filter-input" type="search" data-table-target="feedback-table" placeholder="Filter feedback rows by customer, offer, acceptance, or churn values">
+          <span class="filter-count" data-count-target="feedback-table">Showing all rows</span>
+        </div>
+        <div class="table-wrap" id="feedback-table"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: left;">
+      <th>timestamp</th>
+      <th>customer_id</th>
+      <th>pre_rec</th>
+      <th>cur_rec</th>
+      <th>pre_churn</th>
+      <th>current_churn</th>
+      <th>offer_given</th>
+      <th>offer_string</th>
+      <th>accepted_offer</th>
+      <th>interaction_number</th>
+      <th>churn_delta</th>
+      <th>accepted_count</th>
+      <th>rejected_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-05-02T11:02:01.092276</td>
+      <td>15565701</td>
+      <td>{"Balance": 161993.89, "NumOfProducts": 1.0, "HasCrCard": 0.0, "IsActiveMember": 0.0}</td>
+      <td>{"Balance": 117369.59408110267, "NumOfProducts": 1.0544267232428606, "HasCrCard": 0.07071455403816404, "IsActiveMember": 0.16636945658390062}</td>
+      <td>0.2420</td>
+      <td>0.2452</td>
+      <td>{"rate_bonus": 0.9999999800000007, "cashback_bonus": 9.999999700000012e-09}</td>
+      <td>"Dear valued customer, we appreciate your loyalty and would like to offer you a 2.5% higher savings return on your deposits for the next 6 months, along with a one-time $200 cashback bonus on your credit card and debit card spends. This exclusive offer is our way of thanking you for being an active member and we hope you'll continue to bank with us."</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0.0033</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2026-05-02T15:20:19.294393</td>
+      <td>15566740</td>
+      <td>{"Balance": 83739.32, "NumOfProducts": 1.0, "HasCrCard": 0.0, "IsActiveMember": 1.0}</td>
+      <td>{"Balance": 78242.30847462978, "NumOfProducts": 1.0544267232428606, "HasCrCard": 0.07071455403816404, "IsActiveMember": 0.8663694604839005}</td>
+      <td>0.2666</td>
+      <td>0.2794</td>
+      <td>{"rate_bonus": 0.9999999800000007, "cashback_bonus": 9.999999700000012e-09}</td>
+      <td>"Dear valued customer, we appreciate your loyalty and would like to offer you a higher savings return of 1.62% for the next 6 months on your eligible deposits, helping you grow your balance and stay an active member of our community."</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0.0128</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2026-05-02T15:34:30.081449</td>
+      <td>15565806</td>
+      <td>{"Balance": 0.0, "NumOfProducts": 2.0, "HasCrCard": 0.0, "IsActiveMember": 0.0}</td>
+      <td>{"Balance": 0.0, "NumOfProducts": 2.0, "HasCrCard": 0.0, "IsActiveMember": 0.0}</td>
+      <td>0.0137</td>
+      <td>0.0137</td>
+      <td>{"fee_waiver": 0.32843523169690547, "advisor_callback": 0.34264839183549495}</td>
+      <td>Based on the customer's data, we recommend the following retention offer:\n\n"Get a dedicated advisor callback with tailored account guidance to help you make the most of your banking experience, plus a temporary waiver on service and transfer fees for the next 6 months."</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0.0000</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+      </details>
+    </section>
+
+    <section class="section">
+      <h2>Downloads</h2>
+      <p>Direct links to the generated report assets.</p>
+      <div class="downloads">
+        <a href="feature_parameter_updates.svg">Feature SVG</a>
+        <a href="offer_parameter_updates.svg">Offer SVG</a>
+        <a href="churn_before_after.svg">Churn SVG</a>
+        <a href="feedback_acceptance_trend.svg">Feedback SVG</a>
+        <a href="feature_parameter_updates.csv">Feature CSV</a>
+        <a href="offer_parameter_updates.csv">Offer CSV</a>
+        <a href="feedback_summary.csv">Feedback CSV</a>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function () {
+      const body = document.body;
+      const buttons = Array.from(document.querySelectorAll(".toggle-btn"));
+      const setMode = (mode) => {
+        body.classList.remove("mode-all", "mode-charts", "mode-data");
+        body.classList.add(`mode-${mode}`);
+        buttons.forEach((button) => {
+          button.classList.toggle("active", button.dataset.mode === mode);
+        });
+      };
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => setMode(button.dataset.mode || "all"));
+      });
+
+      const updateFilter = (tableId, query) => {
+        const tableRoot = document.getElementById(tableId);
+        if (!tableRoot) return;
+        const table = tableRoot.querySelector("table");
+        if (!table) return;
+        const rows = Array.from(table.querySelectorAll("tbody tr"));
+        const normalizedQuery = query.trim().toLowerCase();
+        let visibleCount = 0;
+        rows.forEach((row) => {
+          const text = row.textContent.toLowerCase();
+          const visible = !normalizedQuery || text.includes(normalizedQuery);
+          row.classList.toggle("hidden-row", !visible);
+          if (visible) visibleCount += 1;
+        });
+        const countNode = document.querySelector(`[data-count-target="${tableId}"]`);
+        if (countNode) {
+          countNode.textContent = normalizedQuery
+            ? `Showing ${visibleCount} of ${rows.length} rows`
+            : `Showing all ${rows.length} rows`;
+        }
+      };
+
+      document.querySelectorAll(".filter-input").forEach((input) => {
+        const tableId = input.getAttribute("data-table-target");
+        if (!tableId) return;
+        updateFilter(tableId, "");
+        input.addEventListener("input", () => updateFilter(tableId, input.value));
+      });
+    })();
+  </script>
+</body>
+</html>

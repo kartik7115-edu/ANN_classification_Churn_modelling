@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="92" y="42" font-family="Segoe UI, Arial" font-size="28" font-weight="700" fill="#111827">Feature Parameter Updates</text>
+<text x="92" y="70" font-family="Segoe UI, Arial" font-size="14" fill="#4b5563">Feature weights learned by the retention agent. X-axis is batch number.</text>
+<line x1="92" y1="632.00" x2="900" y2="632.00" stroke="#e5e7eb"/>
+<text x="80" y="636.00" text-anchor="end" font-family="Segoe UI, Arial" font-size="12" fill="#4b5563">-0.376</text>
+<line x1="92" y1="498.00" x2="900" y2="498.00" stroke="#e5e7eb"/>
+<text x="80" y="502.00" text-anchor="end" font-family="Segoe UI, Arial" font-size="12" fill="#4b5563">-0.165</text>
+<line x1="92" y1="364.00" x2="900" y2="364.00" stroke="#e5e7eb"/>
+<text x="80" y="368.00" text-anchor="end" font-family="Segoe UI, Arial" font-size="12" fill="#4b5563">0.047</text>
+<line x1="92" y1="230.00" x2="900" y2="230.00" stroke="#e5e7eb"/>
+<text x="80" y="234.00" text-anchor="end" font-family="Segoe UI, Arial" font-size="12" fill="#4b5563">0.258</text>
+<line x1="92" y1="96.00" x2="900" y2="96.00" stroke="#e5e7eb"/>
+<text x="80" y="100.00" text-anchor="end" font-family="Segoe UI, Arial" font-size="12" fill="#4b5563">0.469</text>
+<line x1="496.00" y1="96" x2="496.00" y2="632" stroke="#f3f4f6"/>
+<text x="496.00" y="660" text-anchor="middle" font-family="Segoe UI, Arial" font-size="12" fill="#4b5563">1</text>
+<line x1="92" y1="632" x2="900" y2="632" stroke="#111827"/>
+<line x1="92" y1="96" x2="92" y2="632" stroke="#111827"/>
+<text x="496.0" y="696" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#111827">Batch number</text>
+<text transform="translate(24 364.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#111827">Feature weight</text>
+<polyline points="496.00,580.13" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="496.00" cy="580.13" r="4" fill="#2563eb" stroke="#ffffff" stroke-width="1.5"/>
+<polyline points="496.00,382.46" fill="none" stroke="#dc2626" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="496.00" cy="382.46" r="4" fill="#dc2626" stroke="#ffffff" stroke-width="1.5"/>
+<polyline points="496.00,147.87" fill="none" stroke="#16a34a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="496.00" cy="147.87" r="4" fill="#16a34a" stroke="#ffffff" stroke-width="1.5"/>
+<polyline points="496.00,318.13" fill="none" stroke="#9333ea" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="496.00" cy="318.13" r="4" fill="#9333ea" stroke="#ffffff" stroke-width="1.5"/>
+<text x="936" y="106" font-family="Segoe UI, Arial" font-size="14" font-weight="700" fill="#111827">Legend</text>
+<line x1="936" y1="134" x2="960" y2="134" stroke="#2563eb" stroke-width="3"/>
+<text x="970" y="138" font-family="Segoe UI, Arial" font-size="12" fill="#374151">Balance</text>
+<line x1="936" y1="158" x2="960" y2="158" stroke="#dc2626" stroke-width="3"/>
+<text x="970" y="162" font-family="Segoe UI, Arial" font-size="12" fill="#374151">HasCrCard</text>
+<line x1="936" y1="182" x2="960" y2="182" stroke="#16a34a" stroke-width="3"/>
+<text x="970" y="186" font-family="Segoe UI, Arial" font-size="12" fill="#374151">IsActiveMember</text>
+<line x1="936" y1="206" x2="960" y2="206" stroke="#9333ea" stroke-width="3"/>
+<text x="970" y="210" font-family="Segoe UI, Arial" font-size="12" fill="#374151">NumOfProducts</text>
+</svg>

@@ -1,0 +1,131 @@
+{
+  "retained_mean": {
+    "CreditScore": 651.8531960316463,
+    "Age": 37.40838879819164,
+    "Tenure": 5.033278914981791,
+    "Balance": 72745.2967788522,
+    "NumOfProducts": 1.5442672359663443,
+    "HasCrCard": 0.7071455481602411,
+    "IsActiveMember": 0.5545648624890117,
+    "EstimatedSalary": 99738.39177194524
+  },
+  "feature_reference_diff": {
+    "CreditScore": 6.5016987316954555,
+    "Age": -7.429608256300263,
+    "Tenure": 0.1005346832684868,
+    "Balance": -18363.242558408485,
+    "NumOfProducts": 0.06905859580925044,
+    "HasCrCard": 0.008078292391954456,
+    "IsActiveMember": 0.19374012022097048,
+    "EstimatedSalary": -1727.2857587371254
+  },
+  "feature_weights": {
+    "CreditScore": 0.00035362073311947644,
+    "Age": -0.00040415156556130786,
+    "Tenure": 5.034864145346786e-06,
+    "Balance": -1.0,
+    "NumOfProducts": 3.3207822665079024e-06,
+    "HasCrCard": 0.0,
+    "IsActiveMember": 1.0110518821183306e-05,
+    "EstimatedSalary": -0.09406173418495789
+  },
+  "offer_weights": {
+    "CreditScore": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "Age": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "Tenure": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "Balance": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "NumOfProducts": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "HasCrCard": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "IsActiveMember": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    },
+    "EstimatedSalary": {
+      "cashback_bonus": 0.5,
+      "fee_waiver": 0.5,
+      "rate_bonus": 0.5,
+      "credit_limit_review": 0.5,
+      "product_bundle": 0.5,
+      "advisor_callback": 0.5
+    }
+  },
+  "observations": {},
+  "pending_updates": [
+    {
+      "pre_rec": {
+        "CreditScore": 619.0,
+        "Age": 42.0,
+        "Tenure": 2.0,
+        "Balance": 0.0,
+        "NumOfProducts": 1.0,
+        "HasCrCard": 1.0,
+        "IsActiveMember": 1.0,
+        "EstimatedSalary": 101348.88
+      },
+      "cur_rec": {
+        "CreditScore": 630.4986186110763,
+        "Age": 42.0,
+        "Tenure": 2.0,
+        "Balance": 16367.691775241743,
+        "NumOfProducts": 1.0,
+        "HasCrCard": 1.0,
+        "IsActiveMember": 1.0,
+        "EstimatedSalary": 101348.88
+      },
+      "pre_churn": 0.42392370104789734,
+      "current_churn": 0.3751388490200043,
+      "offer_given": {
+        "credit_limit_review": 0.5,
+        "fee_waiver": 0.5
+      },
+      "offer_string": "Primary offer: propose a preventive supportive retention package centered on priority credit review with card upgrade support, temporary waiver on service and transfer fees for customer 15634602. Credit score 619 and churn risk 0.42."
+    }
+  ],
+  "added_non_updated_count": 1
+}

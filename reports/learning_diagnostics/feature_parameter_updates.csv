@@ -1,0 +1,5 @@
+batch_number,feature,weight,reason,customer_id
+1,Balance,-0.294013683355728,initialize,
+1,NumOfProducts,0.11913462910605604,initialize,
+1,HasCrCard,0.017687854967830395,initialize,
+1,IsActiveMember,0.38760628142705944,initialize,
